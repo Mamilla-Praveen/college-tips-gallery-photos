@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CollegeTips Photo Gallery</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #fbc2eb, #a6c1ee);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+    }
+    @keyframes gradientBG {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+    header {
+      background: #ff3c68;
+      position : relative;
+      color: white;
+      padding: 1.5rem;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .swiper {
+      width: 100%;
+      height: 300px;
+      margin-bottom: 2rem;
+    }
+    .swiper-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+    .filters {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding: 1.5rem;
+    }
+    .filters button {
+      padding: 0.75rem 1.5rem;
+      background: #ff3c68;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    .filters button:hover {
+      background: #e6335d;
+      transform: scale(1.05);
+    }
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .gallery-item {
+      position: relative;
+      overflow: hidden;
+      width: 300px;
+      height: 200px;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .gallery-item:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+    .gallery-item img, .gallery-item iframe {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      cursor: pointer;
+    }
+    .caption {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      text-align: center;
+      padding: 0.5rem;
+      font-size: 1rem;
+    }
+    @media (max-width: 768px) {
+      .gallery-item {
+        width: 90%;
+        height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>CollegeTips Vibe Gallery ✨</header>
+
+  <div class="swiper mySwiper">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide"><img src="https://collegetips.in/images/st.jpg" alt="Slide 1"></div>
+      <div class="swiper-slide"><img src="https://collegetips.in/images/wedding.jpg" alt="Slide 2"></div>
+      <div class="swiper-slide"><img src="https://collegetips.in/images/chooseus-image-2.jpg" alt="Slide 3"></div>
+      <div class="swiper-slide"><img src="https://collegetips.in/images/chooseus-image-1.jpg" alt="Slide 3"></div>
+    </div>
+    <div class="swiper-pagination"></div>
+  </div>
+
+  <div class="filters">
+    <button onclick="filterGallery('all')">All</button>
+    <button onclick="filterGallery('team')">Team Vibes 🤝</button>
+    <button onclick="filterGallery('creative')">Creative Campaigns 🎨</button>
+    <button onclick="filterGallery('play')">Work Hard, Play Hard 🥳</button>
+    <button onclick="filterGallery('bts')">Behind-The-Scenes 🎥</button>
+  </div>
+  <div class="gallery" id="gallery"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+  <script>
+    const swiper = new Swiper(".mySwiper", {
+      spaceBetween: 30,
+      effect: "fade",
+      loop: true,
+      autoplay: {
+        delay: 2500,
+        disableOnInteraction: false
+      },
+      pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+      },
+    });
+  </script>
+  <script>
+    function getYouTubeID(url) {
+      const regex = /(?:youtube\.com\/.*v=|youtu\.be\/)([^&?/]+)/;
+      const match = url.match(regex);
+      return match ? match[1] : null;
+    }
+
+    const sources = [
+      { src: "https://collegetips.in/images/header-image-1.jpg", caption: "Team Vibes 1", type: "image", category: "team" },
+      { src: "https://collegetips.in/images/header-image-2.jpg", caption: "Team Vibes 2", type: "image", category: "team" },
+      { src: "https://collegetips.in/images/header-image-3.jpg", caption: "Creative Campaigns 1", type: "image", category: "creative" },
+      { src: "https://collegetips.in/images/birthday.jpg", caption: "Birthday Bash", type: "image", category: "play" },
+      { src: "https://collegetips.in/images/wedding.jpg", caption: "Wedding Moments", type: "image", category: "play" },
+      { src: "https://collegetips.in/images/office-party.jpg", caption: "Office Party", type: "image", category: "play" },
+      { src: "https://collegetips.in/images/night-party.jpg", caption: "Night Party", type: "image", category: "play" },
+      { src: "https://collegetips.in/images/team-member1.jpg", caption: "Team Member 1", type: "image", category: "team" },
+      { src: "https://collegetips.in/images/team-member2.jpg", caption: "Team Member 2", type: "image", category: "team" },
+      { src: "https://collegetips.in/images/st.jpg", caption: "Studio Work", type: "image", category: "bts" },
+      { src: "https://collegetips.in/images/team-member4.jpg", caption: "Team Member 4", type: "image", category: "team" },
+      { src: "https://www.youtube.com/watch?v=Uvn6KiClb1c", caption: "Fun Video 1", type: "video", category: "play" },
+      { src: "https://www.youtube.com/watch?v=KMqV4RZ4Wuo", caption: "Team Outing", type: "video", category: "team" },
+      { src: "https://www.youtube.com/watch?v=TPDICJfN7vA", caption: "Behind the Scenes 1", type: "video", category: "bts" },
+      { src: "https://www.youtube.com/watch?v=VDorqOL6__U", caption: "Creative Campaign", type: "video", category: "creative" },
+      { src: "https://www.youtube.com/watch?v=ZfJTbCP_9hU", caption: "Office Laughs", type: "video", category: "play" },
+      { src: "https://www.youtube.com/watch?v=WXHA4lmZ45w", caption: "Behind the Scenes 2", type: "video", category: "bts" },
+      { src: "https://collegetips.in/images/about-header-image1.jpg", caption: "Office Tour 1", type: "image", category: "bts" },
+      { src: "https://collegetips.in/images/about-header-image2.jpg", caption: "Office Tour 2", type: "image", category: "bts" },
+      { src: "https://collegetips.in/images/about-header-image3.jpg", caption: "Work Mode", type: "image", category: "bts" },
+      { src: "https://collegetips.in/images/about-header-image4.jpg", caption: "Team Coordination", type: "image", category: "team" },
+      { src: "https://collegetips.in/images/chooseus-image-2.jpg", caption: "Creative Moments", type: "image", category: "creative" },
+      { src: "https://collegetips.in/images/bs2424.jpeg", caption: "Behind Scenes Setup", type: "image", category: "bts" },
+      { src: "https://collegetips.in/images/chooseus-image-4.jpg", caption: "Why Us", type: "image", category: "creative" },
+      { src: "https://www.youtube.com/watch?v=wz_4Jxd9yPI", caption: "Interview Prep", type: "video", category: "creative" },
+      { src: "https://www.youtube.com/watch?v=8lX_9SB8Kd0", caption: "Photo Day", type: "video", category: "bts" },
+      { src: "https://collegetips.in/images/wi.jpeg", caption: "Work Inspiration", type: "image", category: "creative" }
+    ];
+
+    const gallery = document.getElementById('gallery');
+    sources.forEach(item => {
+      const div = document.createElement('div');
+      div.className = `gallery-item ${item.category}`;
+      const link = document.createElement('a');
+      link.href = item.type === 'video'
+        ? `https://www.youtube.com/embed/${getYouTubeID(item.src)}`
+        : item.src;
+      link.className = 'glightbox';
+      link.setAttribute('data-gallery', 'gallery1');
+      if (item.type === 'video') link.setAttribute('data-type', 'video');
+      const img = document.createElement('img');
+      if (item.type === 'video') {
+        const videoId = getYouTubeID(item.src);
+        img.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+      } else {
+        img.src = item.src;
+      }
+      img.alt = item.caption;
+      const caption = document.createElement('div');
+      caption.className = 'caption';
+      caption.innerText = item.caption;
+      link.appendChild(img);
+      link.appendChild(caption);
+      div.appendChild(link);
+      gallery.appendChild(div);
+    });
+
+    const lightbox = GLightbox({
+      selector: '.glightbox',
+      touchNavigation: true,
+      loop: true,
+      autoplayVideos: true
+    });
+
+    function filterGallery(category) {
+      const items = document.querySelectorAll('.gallery-item');
+      items.forEach(item => {
+        item.style.display = (category === 'all' || item.classList.contains(category)) ? 'block' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>
